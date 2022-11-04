@@ -27,7 +27,7 @@ public class UserController {
     public User update(@RequestBody User user){
         return userServices.updateUser(user);
     }
-    @GetMapping("{/id}")
+    @GetMapping("/{id}")
     public User get(@PathVariable Integer id){
         return userServices.getUser(id);
     }

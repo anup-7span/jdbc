@@ -1,33 +1,32 @@
-package com.jdbc.demo.service;
+package com.jdbc.demo.service.impl;
 
 import com.jdbc.demo.entity.User;
+import com.jdbc.demo.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
 
 import java.util.List;
+@Service
 public class UserServiceImpl implements UserService {
 
-    private static String INSERT_USER_QUERY="INSERT INTO USER (id,firstName,lastname)values(?,?,?)";
-    private static String UPDATE_USER_BY_ID_QUERY="UPDATE USER SET first_name=? WHERE id=?";
-    private static String GET_USE_BY_ID_QUERY="SELECT * FROM USER WHERE id=?";
-    private static String DELETE_USER_BY_ID_QUERY="DELETE FROM USER WHERE ID=?";
-    private static String GET_USERS_QUERY="SELECT * FROM USER";
-    @Autowired
-    public UserService userService;
-
+    private static String INSERT_USER_QUERY="INSERT INTO emp (id,first_name,last_name)values(?,?,?)";
+    private static String UPDATE_USER_BY_ID_QUERY="UPDATE emp SET first_name=? WHERE id=?";
+    private static String GET_USE_BY_ID_QUERY="SELECT * FROM emp WHERE id=?";
+    private static String DELETE_USER_BY_ID_QUERY="DELETE FROM emp WHERE ID=?";
+    private static String GET_USERS_QUERY="SELECT * FROM emp";
     @Autowired
     private JdbcTemplate jdbcTemplate;
     @Override
     public User saveUser(User user) {
-        jdbcTemplate.update(INSERT_USER_QUERY,user.getId(),user.getFirstName(),user.getLastName());
+        jdbcTemplate.update(INSERT_USER_QUERY,user.getId(),user.getFirst_name(),user.getLast_name());
         return user;
     }
 
     @Override
     public User updateUser(User user) {
-        jdbcTemplate.update(UPDATE_USER_BY_ID_QUERY,user.getFirstName(),user.getId());
+        jdbcTemplate.update(UPDATE_USER_BY_ID_QUERY,user.getFirst_name(),user.getId());
         return user;
     }
 
