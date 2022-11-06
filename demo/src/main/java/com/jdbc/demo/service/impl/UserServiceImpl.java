@@ -34,7 +34,7 @@ public class UserServiceImpl implements UserService {
     public User getUser(Integer id) {
         return jdbcTemplate.queryForObject(GET_USE_BY_ID_QUERY,(rs, rowNum) -> {
           return new User(rs.getInt("id"),rs.getString("first_name"),rs.getString("last_name"));
-        });
+        },id);
     }
 
     @Override
@@ -43,11 +43,6 @@ public class UserServiceImpl implements UserService {
         return "User deleted";
     }
 
- /*   @Override
-    public String deleteById(Integer id) {
-        jdbcTemplate.update(DELETE_USER_BY_ID_QUERY,id);
-        return "User deleted";
-    }*/
 
     @Override
     public List<User> allUser() {
