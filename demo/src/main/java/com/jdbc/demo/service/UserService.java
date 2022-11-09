@@ -11,4 +11,7 @@ public interface UserService {
     User getUser(Integer id);
     String deleteById(Integer id);
     List<User> allUser();
+    User getUsers(User user);
+    String delete(User user);
+    List<User> allRecord();
 }

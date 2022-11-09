@@ -1,7 +1,10 @@
 package com.jdbc.demo.controller;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jdbc.demo.entity.User;
 import com.jdbc.demo.service.UserService;
+import com.jdbc.demo.utills.RfsConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -10,8 +13,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.HashMap;
 import java.util.List;
 
 @RestController
@@ -20,6 +25,40 @@ public class UserController {
     @Autowired
     UserService userServices;
 
+    @Autowired
+    ObjectMapper objectMapper;
+
+/*    @RequestMapping(method = RequestMethod.POST)
+    public Object addUser(@RequestBody HashMap<String,Object> requestBean){
+        String request=null;
+        request = String.valueOf(requestBean.get(RfsConstants.REQUEST));
+        if(request.equalsIgnoreCase(RfsConstants.ADD_USER)){
+            User o=objectMapper.convertValue(requestBean, new TypeReference<User>() {
+            });
+            return userServices.saveUser(o);
+        }
+        if (request.equalsIgnoreCase(RfsConstants.UPDATE_USER)){
+            User o=objectMapper.convertValue(requestBean, new TypeReference<User>() {
+            });
+            return userServices.updateUser(o);
+        }
+        if (request.equalsIgnoreCase(RfsConstants.GET_USER)){
+            User o=objectMapper.convertValue(requestBean, new TypeReference<User>() {
+            });
+            return userServices.getUsers(o);
+        }
+        if (request.equalsIgnoreCase(RfsConstants.DELETE_USER)){
+            User o=objectMapper.convertValue(requestBean, new TypeReference<User>() {
+            });
+            return userServices.delete(o);
+        }
+        return null;
+    }*/
+    @GetMapping()
+    public List<User> getAll(){
+        return userServices.allRecord();
+    }
+/*
     @PostMapping("/add")
     public User addUser(@RequestBody User user){
         return userServices.saveUser(user);
@@ -41,6 +80,7 @@ public class UserController {
          userServices.deleteById(id);
          return "User deleted"+id;
    }
+*/
 
 
 }
