@@ -7,5 +7,6 @@ public class RfsConstants {
     public static final String UPDATE_USER="updateUser";
     public static final String GET_USER="getUserById";
     public static final String DELETE_USER="deleteUser";
+    public static final String GET_JOIN_QUERY_DATA="joinData";
 
 }

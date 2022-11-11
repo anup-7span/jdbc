@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/user")
@@ -28,7 +29,7 @@ public class UserController {
     @Autowired
     ObjectMapper objectMapper;
 
-/*    @RequestMapping(method = RequestMethod.POST)
+    @RequestMapping(method = RequestMethod.POST)
     public Object addUser(@RequestBody HashMap<String,Object> requestBean){
         String request=null;
         request = String.valueOf(requestBean.get(RfsConstants.REQUEST));
@@ -52,13 +53,15 @@ public class UserController {
             });
             return userServices.delete(o);
         }
+        if (request.equalsIgnoreCase(RfsConstants.GET_JOIN_QUERY_DATA)){
+            return userServices.allRecord();
+        }
         return null;
-    }*/
-    @GetMapping()
+    }
+/*    @GetMapping()
     public List<User> getAll(){
         return userServices.allRecord();
-    }
-/*
+    }*/
     @PostMapping("/add")
     public User addUser(@RequestBody User user){
         return userServices.saveUser(user);
@@ -76,11 +79,18 @@ public class UserController {
         return userServices.allUser();
    }
    @DeleteMapping("/{id}")
-    public String deleteUser(@PathVariable Integer id){
-         userServices.deleteById(id);
-         return "User deleted"+id;
+    public String deleteUser(@PathVariable Integer id) {
+       userServices.deleteById(id);
+       return "User deleted" + id;
    }
-*/
+   @PutMapping("/alluser")
+    public int updateAll(@RequestBody List<User>userList){
+        return userServices.multiInsert(userList);
+   }
+    @PutMapping("/users")
+    public User updateAll(@RequestBody User user){
+        return userServices.addMultipleUsers(user);
+    }
 
 
 }

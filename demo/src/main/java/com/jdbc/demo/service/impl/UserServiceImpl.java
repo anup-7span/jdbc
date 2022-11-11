@@ -3,11 +3,14 @@ package com.jdbc.demo.service.impl;
 import com.jdbc.demo.entity.User;
 import com.jdbc.demo.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
 
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.List;
 @Service
 public class UserServiceImpl implements UserService {
@@ -24,7 +27,9 @@ public class UserServiceImpl implements UserService {
             "a.a_id,\n" +
             "a.street  FROM person p\n" +
             "inner join address a on a.a_id=p.address_id";
-
+    private static String RIGHT_JOIN="SELECT name,street from person p right join address a on p.address_id=a.a_id";
+    private static String LEFT_JOIN="SELECT name,street from person p left join address a on p.address_id=a.a_id";
+    private static String INSERT_MULTIPLE_TABLE="INSERT INTO person(p_id,name)values(?,?)";
     @Autowired
     private JdbcTemplate jdbcTemplate;
     @Override
@@ -73,7 +78,59 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<User> allRecord() {
         List<User>userList;
-        userList=jdbcTemplate.query(INNER_JOIN,new Object[]{},BeanPropertyRowMapper.newInstance(User.class));
+        userList=jdbcTemplate.query(LEFT_JOIN,new Object[]{},BeanPropertyRowMapper.newInstance(User.class));
         return userList;
     }
+
+    @Override
+    public int batchUpdate(List<User> userList) {
+        jdbcTemplate.batchUpdate(UPDATE_USER_BY_ID_QUERY, new BatchPreparedStatementSetter() {
+            @Override
+            public void setValues(PreparedStatement ps, int i) throws SQLException {
+            ps.setString(1,userList.get(i).getFirst_name());
+            ps.setInt(2,userList.get(i).getId());
+
+            }
+
+            @Override
+            public int getBatchSize() {
+                return userList.size();
+            }
+        });
+        return userList.size();
+    }
+
+    @Override
+    public int multiInsert(List<User> userList) {
+        StringBuilder builder = new StringBuilder();
+        builder.append("INSERT INTO person(p_id,name)values(?,?)");
+        builder.append("INSERT INTO address(a_id,street)values(?,?)");
+        jdbcTemplate.batchUpdate(builder.toString(), new BatchPreparedStatementSetter() {
+            @Override
+            public void setValues(PreparedStatement ps, int i) throws SQLException {
+                User user=userList.get(i);
+                ps.setObject(1,user.getP_id());
+                ps.setObject(2,user.getName());
+                ps.setObject(3,user.getA_id());
+                ps.setObject(4,user.getStreet());
+            }
+
+            @Override
+            public int getBatchSize() {
+                return userList.size();
+            }
+        });
+        return 0;
+    }
+
+    @Override
+    public User addMultipleUsers(User user) {
+        String sql="INSERT INTO person(p_id,name)values(?,?)";
+        jdbcTemplate.update(sql,user.getP_id(),user.getName());
+        String sql1="INSERT INTO address(a_id,street)values(?,?)";
+        jdbcTemplate.update(sql1,user.getA_id(),user.getStreet());
+        return user;
+
+    }
+
 }

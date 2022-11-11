@@ -14,4 +14,9 @@ public interface UserService {
     User getUsers(User user);
     String delete(User user);
     List<User> allRecord();
+
+    int batchUpdate(List<User> userList);
+    int multiInsert(List<User> userList);
+
+    User addMultipleUsers(User user);
 }
