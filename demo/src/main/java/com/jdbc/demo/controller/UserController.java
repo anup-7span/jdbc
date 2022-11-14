@@ -87,10 +87,13 @@ public class UserController {
     public int updateAll(@RequestBody List<User>userList){
         return userServices.multiInsert(userList);
    }
-    @PutMapping("/users")
+    @PostMapping("/users")
     public User updateAll(@RequestBody User user){
-        return userServices.addMultipleUsers(user);
+        return userServices.addMultipleUser(user);
     }
 
-
+    @PostMapping("/addRecords")
+    public int addUsers(@RequestBody List<User> userList ){
+        return userServices.addMultiRecords(userList);
+    }
 }

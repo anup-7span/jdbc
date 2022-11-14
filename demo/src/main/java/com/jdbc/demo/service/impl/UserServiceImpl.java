@@ -7,10 +7,12 @@ import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 @Service
 public class UserServiceImpl implements UserService {
@@ -102,10 +104,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public int multiInsert(List<User> userList) {
-        StringBuilder builder = new StringBuilder();
-        builder.append("INSERT INTO person(p_id,name)values(?,?)");
-        builder.append("INSERT INTO address(a_id,street)values(?,?)");
-        jdbcTemplate.batchUpdate(builder.toString(), new BatchPreparedStatementSetter() {
+        String builder = "INSERT INTO person(p_id,name)values(?,?)" +
+                "INSERT INTO address(a_id,street)values(?,?)";
+        jdbcTemplate.batchUpdate(builder, new BatchPreparedStatementSetter() {
             @Override
             public void setValues(PreparedStatement ps, int i) throws SQLException {
                 User user=userList.get(i);
@@ -124,13 +125,27 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User addMultipleUsers(User user) {
+    @Transactional
+    public User addMultipleUser(User user) {
         String sql="INSERT INTO person(p_id,name)values(?,?)";
         jdbcTemplate.update(sql,user.getP_id(),user.getName());
         String sql1="INSERT INTO address(a_id,street)values(?,?)";
         jdbcTemplate.update(sql1,user.getA_id(),user.getStreet());
         return user;
 
+    }
+
+    @Override
+    public int addMultiRecords(List<User> userList) {
+        List<Object[]> list=new ArrayList<>();
+        for (User user: userList) {
+         Object[] objects={user.getId(),
+                 user.getFirst_name(),
+                 user.getLast_name()};
+         list.add(objects);
+        }
+            jdbcTemplate.batchUpdate(INSERT_USER_QUERY, list);
+        return userList.size();
     }
 
 }

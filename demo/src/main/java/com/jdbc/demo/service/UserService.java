@@ -18,5 +18,7 @@ public interface UserService {
     int batchUpdate(List<User> userList);
     int multiInsert(List<User> userList);
 
-    User addMultipleUsers(User user);
+    User addMultipleUser(User user);
+
+    int addMultiRecords(List<User> userList);
 }
